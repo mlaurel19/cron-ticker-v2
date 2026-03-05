@@ -1,0 +1,30 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env: #GLOBALES
+  NODE_VERSION: "20"
+  APP_NAME: cron-ticker-v2
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    env: #Job
+      BUILD_DIR: dist
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show variables
+        run: echo "App: ${{env.APP_NAME}}, Node: ${{env.NODE_VERSION}}"
+
+      - name: Build
+        run: npm run build
+        env:
+          APP_VERSION: "3.0.0"
