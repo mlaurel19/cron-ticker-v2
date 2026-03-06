@@ -12,20 +12,30 @@ env: #GLOBALES
   APP_NAME: cron-ticker-v2
 
 jobs:
-  build: 
+  # -----------JOB 2 TEST-----------
+  test:
+    
+    name: Tests
+    
     runs-on: ubuntu-latest
-
-    env: #Job
-      BUILD_DIR: dist
-
+    
     steps:
       - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'
 
-      - name: Show variables
-        run: 
-          echo "App: ${{env.APP_NAME}}, Node: ${{env.NODE_VERSION}}"
+      - run: npm ci
+      
+      - name: Run tests with coverage
+        run: npm run test:coverage
 
-      - name: Build
-        run: npm run build
-        env:
-          APP_VERSION: "3.0.0"
+      - name: Coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{github.sha}}
+          path: coverage/
+          retention-days: 3 
