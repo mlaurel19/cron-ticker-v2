@@ -13,13 +13,14 @@ env: #GLOBALES
 
 jobs:
   # -----------JOB 2 TEST-----------
-  test:
+  build:
     
-    name: Tests
+    name: Build
     
     runs-on: ubuntu-latest
     
     steps:
+
       - uses: actions/checkout@v4
       
       - uses: actions/setup-node@v4
@@ -29,13 +30,19 @@ jobs:
 
       - run: npm ci
       
-      - name: Run tests with coverage
-        run: npm run test:coverage
+      - name: Build App
+        run: npm run build
+        env:
+          APP_VERSION: ${{vars.APP_VERSION || '1.0.0'}}
 
-      - name: Coverage report
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: coverage-${{github.sha}}
-          path: coverage/
-          retention-days: 3 
+          name: build-${{github.sha}}
+          path: dist/
+          retention-days: 5
+
+
+
+
+       
